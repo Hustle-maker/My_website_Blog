@@ -20,7 +20,7 @@ class Anonymous(AnonymousUserMixin):
     self.username = 'Guest'
 
 
-Base = declarative_base()
+# Base = declarative_base()
 
 import os
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -31,11 +31,10 @@ bootstrap = Bootstrap(app)
 gravatar = Gravatar(app, size=20, rating='g', default='retro', force_default=False,
                    force_lower=False, use_ssl=False, base_url=None)
 
-##CONNECT TO DB
+
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///blog.db')
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 db = SQLAlchemy(app)
-db.init_app(app)
 
 
 login_manager = LoginManager()
@@ -47,7 +46,7 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-class BlogPost(db.Model, Base):
+class BlogPost(db.Model):
     __tablename__ = "blog_posts"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(250), unique=True, nullable=False)
@@ -61,7 +60,7 @@ class BlogPost(db.Model, Base):
 
 
 # Parent\
-class User(UserMixin, db.Model, Base):
+class User(UserMixin, db.Model):
     __tablename__ = "users"
     user_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250))
@@ -74,7 +73,7 @@ class User(UserMixin, db.Model, Base):
         return self.user_id
 
 
-class Comment(db.Model, Base):
+class Comment(db.Model):
     __tablename__ = "comments"
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.Text, nullable=False)
